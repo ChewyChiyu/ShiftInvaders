@@ -66,14 +66,27 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
                 
                 //hiding screen items not needed
                 scoreLabel.alpha = 0
+                self.physicsWorld.speed = 0
                 //showing menu
                 let gameOverScene = SKScene(fileNamed: "MenuNode")
                 let menuNode = gameOverScene?.childNode(withName: "Menu")
                 let scoreNode = menuNode?.childNode(withName: "Score") as? SKLabelNode
                 //managing scores . . . .
                 scoreNode?.text = String(score)
+                //manage highscores
+                if let s = UserDefaults.standard.value(forKey: "highscore") {
+                    if(score > (s as? Int)!){
+                         UserDefaults.standard.set(score, forKey: "highscore")
+                    }
+                } else {
+                    //user default does not exist yet so set highscore to 0
+                      UserDefaults.standard.set(score, forKey: "highscore")
+                  
+                }
                 
-                
+                let highscoreNode = menuNode?.childNode(withName: "HighScore") as? SKLabelNode
+                let highscore = (UserDefaults.standard.value(forKey: "highscore") as? Int)!
+                highscoreNode?.text = String(highscore)
                 
                 //adding fade
                 menuNode?.removeFromParent()
@@ -155,9 +168,19 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
         
         
         if(nodeA?.name=="invader" && nodeB?.name=="bullet" || nodeB?.name=="invader" && nodeA?.name=="bullet"){
+           
+            //adding partical effect for hit
+            let spark = SKEmitterNode(fileNamed: "Spark")
+            spark?.position = (nodeA?.position)!
+            addChild(spark!)
+            spark!.run(SKAction.applyTorque(10, duration: 0.5), completion: {
+                spark?.removeFromParent() //parical removal after finished animation
+            })
+            
             nodeA?.removeFromParent()
             nodeB?.removeFromParent()
             score+=10 //basic score increment for now
+            
         }
         
         if(nodeA?.name=="invader" && nodeB?.name=="SpaceDefender" || nodeB?.name=="invader" && nodeA?.name=="SpaceDefender" && gameLevel != -1){

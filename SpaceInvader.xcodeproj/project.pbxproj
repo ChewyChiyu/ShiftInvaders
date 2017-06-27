@@ -24,6 +24,7 @@
 		20B52C0E1F01CA2500C0182A /* SpaceInvaderUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B52C0D1F01CA2500C0182A /* SpaceInvaderUITests.swift */; };
 		20B52C1C1F0231E000C0182A /* Bullet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B52C1B1F0231E000C0182A /* Bullet.swift */; };
 		20B52C201F02405F00C0182A /* formationAlpha.sks in Resources */ = {isa = PBXBuildFile; fileRef = 20B52C1F1F02405F00C0182A /* formationAlpha.sks */; };
+		20E111E31F02EA0A005CC652 /* Spark.sks in Resources */ = {isa = PBXBuildFile; fileRef = 20E111E21F02EA0A005CC652 /* Spark.sks */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +68,7 @@
 		20B52C0F1F01CA2500C0182A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		20B52C1B1F0231E000C0182A /* Bullet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bullet.swift; sourceTree = "<group>"; };
 		20B52C1F1F02405F00C0182A /* formationAlpha.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = formationAlpha.sks; sourceTree = "<group>"; };
+		20E111E21F02EA0A005CC652 /* Spark.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Spark.sks; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,6 +126,7 @@
 				204032E71F02C5A900B22249 /* formationGamma.sks */,
 				204032E51F02BF0B00B22249 /* formationBeta.sks */,
 				204032E91F02C83800B22249 /* MenuNode.sks */,
+				20E111E21F02EA0A005CC652 /* Spark.sks */,
 				204032EB1F02D16E00B22249 /* RestartButton.swift */,
 				204032E31F02495600B22249 /* Invader.swift */,
 				20B52C1B1F0231E000C0182A /* Bullet.swift */,
@@ -266,6 +269,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				20B52C201F02405F00C0182A /* formationAlpha.sks in Resources */,
+				20E111E31F02EA0A005CC652 /* Spark.sks in Resources */,
 				20B52BF31F01CA2500C0182A /* Main.storyboard in Resources */,
 				204032EA1F02C83800B22249 /* MenuNode.sks in Resources */,
 				20B52BEA1F01CA2500C0182A /* GameScene.sks in Resources */,
