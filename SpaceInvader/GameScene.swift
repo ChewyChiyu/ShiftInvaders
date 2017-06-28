@@ -9,7 +9,9 @@
 import SpriteKit
 import GameplayKit
 import CoreMotion
-
+import Firebase
+import FirebaseDatabase
+import FirebaseCore
 
 enum attackConfig{
     case formationAlpha, formationBeta, formationGamma
@@ -19,12 +21,31 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
     //game screen var
     var spaceDefender : SKSpriteNode!
     var scoreLabel : SKLabelNode!
+    
+    
+    
     //management of score to label screen
     var score = 0{
         didSet{
             scoreLabel.text = String(score)
         }
     }
+    var nameVar = String("Evan") // string for now , user can change later
+    //highscore handle
+    
+    var firstPlace: Int?
+    var secondPlace: Int?
+    var thirdPlace: Int?
+    
+    var firstName: String?
+    var secondName: String?
+    var thirdName: String?
+    
+    
+    //firebase master branch
+    
+    let masterBranch = Database.database().reference()
+    
     //core motion var
     let motionManager = CMMotionManager()
     
@@ -76,17 +97,97 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
                 //manage highscores
                 if let s = UserDefaults.standard.value(forKey: "highscore") {
                     if(score > (s as? Int)!){
-                         UserDefaults.standard.set(score, forKey: "highscore")
+                        UserDefaults.standard.set(score, forKey: "highscore")
                     }
                 } else {
                     //user default does not exist yet so set highscore to 0
-                      UserDefaults.standard.set(score, forKey: "highscore")
-                  
+                    UserDefaults.standard.set(score, forKey: "highscore")
+                    
                 }
                 
                 let highscoreNode = menuNode?.childNode(withName: "HighScore") as? SKLabelNode
                 let highscore = (UserDefaults.standard.value(forKey: "highscore") as? Int)!
                 highscoreNode?.text = String(highscore)
+                
+                
+                //Will be handling firebase highscore over here
+                //first seek if user is connected or not
+                var isConnected:Bool = true
+                let connectedRef = Database.database().reference(withPath: ".info/connected")
+                connectedRef.observe(.value, with: { (connected) in
+                    if let boolean = connected.value as? Bool, boolean == true {
+                        print("connected")
+                        isConnected = true
+                        
+                    } else {
+                        print("disconnected")
+                        isConnected = false
+                    }
+                })
+                if(isConnected){ //only follow through if connected
+                    fetchData {
+                        //loop to here after downloading highscores
+                        
+                        
+                        //per prompt highscore labels and such if score is thirdplace or better
+                        self.fetchName{
+                            
+                            if(self.score>self.firstPlace!){
+                                //name placement and score placement
+                                self.thirdPlace = (self.secondPlace)
+                                self.secondPlace = (self.firstPlace)
+                                self.firstPlace  = (self.score)
+                                
+                                self.thirdName = (self.secondName)
+                                self.secondName = (self.firstName)
+                                self.firstName  = (self.nameVar!)
+                                
+                                
+                            }else if(self.score>self.secondPlace!){
+                                self.thirdPlace = (self.secondPlace)
+                                self.secondPlace = (self.score)
+                                
+                                self.thirdName = (self.secondName)
+                                self.secondName = (self.nameVar!)
+                            }else if(self.score>self.thirdPlace!){
+                                self.thirdName = (self.nameVar!)
+                                self.thirdPlace = (self.score)
+                                
+                            }else{
+                                //did not make it to highscore board
+                                //hide new highscore label
+                            }
+                            
+                            
+                            // from database to screen labels
+                            let firstLabel = menuNode?.childNode(withName: "First") as? SKLabelNode
+                            let secondLabel = menuNode?.childNode(withName: "Second") as? SKLabelNode
+                            let thirdLabel = menuNode?.childNode(withName: "Third") as? SKLabelNode
+                            
+                            
+                            firstLabel?.text =  "\(self.firstName!) \(self.firstPlace!)"
+                            secondLabel?.text = "\(self.secondName!) \(self.secondPlace!)"
+                            thirdLabel?.text = "\(self.thirdName!) \(self.thirdPlace!)"
+                            
+                            
+                            //upload new scores and names to database
+                            self.masterBranch.child("First/score").setValue(self.firstPlace)
+                            self.masterBranch.child("Second/score").setValue(self.secondPlace)
+                            self.masterBranch.child("Third/score").setValue(self.thirdPlace)
+                            
+                            self.masterBranch.child("First/name").setValue(self.firstName)
+                            self.masterBranch.child("Second/name").setValue(self.secondName)
+                            self.masterBranch.child("Third/name").setValue(self.thirdName)
+                            
+                        }
+                        
+                    }
+                    
+                }
+                
+                
+                
+                
                 
                 //adding fade
                 menuNode?.removeFromParent()
@@ -106,14 +207,45 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
                     }
                 })
                 
-                
-                
             }
             
             
         }
     }
-    
+    func fetchData(andOnCompletion completion:@escaping ()->()){
+        masterBranch.observeSingleEvent(of: .value, with: { snapshot in
+            if(self.firstPlace==nil||self.secondPlace==nil||self.thirdPlace==nil||self.firstName==nil||self.secondName==nil||self.thirdName==nil){
+                self.firstPlace = snapshot.childSnapshot(forPath: "First/score").value as? Int
+                self.secondPlace = snapshot.childSnapshot(forPath: "Second/score").value as? Int
+                self.thirdPlace = snapshot.childSnapshot(forPath: "Third/score").value as? Int
+                
+                self.firstName = snapshot.childSnapshot(forPath: "First/name").value as? String
+                self.secondName = snapshot.childSnapshot(forPath: "Second/name").value as? String
+                self.thirdName = snapshot.childSnapshot(forPath: "Third/name").value as? String
+                
+                completion()
+            }
+        })
+    }
+    func fetchName(andOnCompletion completion:@escaping ()->()){
+        //getting name of user
+        if(self.score > self.thirdPlace!){
+            let alert = UIAlertController(title: "New Highscore!", message: "Enter a name", preferredStyle: .alert)
+            
+            alert.addTextField(configurationHandler: { (textField) -> Void in
+                textField.text = ""
+            })
+            
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
+                let textField = alert.textFields![0]
+                self.nameVar? = textField.text!
+                completion()
+            }))
+            self.view?.window?.rootViewController?.present(alert, animated: true, completion: nil)
+        }
+        
+        
+    }
     func loadEnemy(formation: attackConfig){
         
         var scene = SKScene()
@@ -157,6 +289,8 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
         
         
         physicsWorld.contactDelegate = self
+        
+        
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
@@ -168,7 +302,7 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
         
         
         if(nodeA?.name=="invader" && nodeB?.name=="bullet" || nodeB?.name=="invader" && nodeA?.name=="bullet"){
-           
+            
             //adding partical effect for hit
             let spark = SKEmitterNode(fileNamed: "Spark")
             spark?.position = (nodeA?.position)!
@@ -195,6 +329,8 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if(gameLevel==0){
             gameLevel+=1
+            let touchNode = self.childNode(withName: "FirstTouch") as? SKLabelNode
+            touchNode?.removeFromParent()
         }
         if(gameLevel != -1){
             shoot()
@@ -247,10 +383,10 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
     func handleAccel(){
         if let data = motionManager.accelerometerData {
             if (data.acceleration.x > 0.2 && spaceDefender.position.x+spaceDefender.size.width/2 < (view?.bounds.width)!) {
-                spaceDefender.physicsBody?.velocity.dx = 300
+                spaceDefender.physicsBody?.velocity.dx = (CGFloat(500*data.acceleration.x))
             }
             else if (data.acceleration.x < -0.2 && spaceDefender.position.x-spaceDefender.size.width/2 > 0 ) {
-                spaceDefender.physicsBody?.velocity.dx = -300
+                spaceDefender.physicsBody?.velocity.dx = (CGFloat(500*data.acceleration.x))
             }
             else{
                 spaceDefender.physicsBody?.velocity.dx = 0
