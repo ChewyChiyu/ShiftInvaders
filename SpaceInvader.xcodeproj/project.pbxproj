@@ -25,6 +25,7 @@
 		20B52C0E1F01CA2500C0182A /* SpaceInvaderUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B52C0D1F01CA2500C0182A /* SpaceInvaderUITests.swift */; };
 		20B52C1C1F0231E000C0182A /* Bullet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20B52C1B1F0231E000C0182A /* Bullet.swift */; };
 		20B52C201F02405F00C0182A /* formationAlpha.sks in Resources */ = {isa = PBXBuildFile; fileRef = 20B52C1F1F02405F00C0182A /* formationAlpha.sks */; };
+		20C246911F042782005E5A1B /* formationDelta.sks in Resources */ = {isa = PBXBuildFile; fileRef = 20C246901F042782005E5A1B /* formationDelta.sks */; };
 		20E111E31F02EA0A005CC652 /* Spark.sks in Resources */ = {isa = PBXBuildFile; fileRef = 20E111E21F02EA0A005CC652 /* Spark.sks */; };
 		3DB21C019FD1C4A6BA231664 /* Pods_SpaceInvaderUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A30525B97AE86F4FA013B18E /* Pods_SpaceInvaderUITests.framework */; };
 		8D8474397F1444C321665901 /* Pods_SpaceInvader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88E044E680310E8A14CDB558 /* Pods_SpaceInvader.framework */; };
@@ -74,6 +75,7 @@
 		20B52C0F1F01CA2500C0182A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		20B52C1B1F0231E000C0182A /* Bullet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bullet.swift; sourceTree = "<group>"; };
 		20B52C1F1F02405F00C0182A /* formationAlpha.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = formationAlpha.sks; sourceTree = "<group>"; };
+		20C246901F042782005E5A1B /* formationDelta.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = formationDelta.sks; sourceTree = "<group>"; };
 		20E111E21F02EA0A005CC652 /* Spark.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Spark.sks; sourceTree = "<group>"; };
 		3BF443F3F7A4E96A5D7D4D1E /* Pods-SpaceInvaderTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SpaceInvaderTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SpaceInvaderTests/Pods-SpaceInvaderTests.debug.xcconfig"; sourceTree = "<group>"; };
 		71FFB50DCED74FF0FA3652AA /* Pods-SpaceInvaderUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SpaceInvaderUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SpaceInvaderUITests/Pods-SpaceInvaderUITests.release.xcconfig"; sourceTree = "<group>"; };
@@ -142,8 +144,9 @@
 				20B52BE91F01CA2500C0182A /* GameScene.sks */,
 				20B52BEB1F01CA2500C0182A /* Actions.sks */,
 				20B52C1F1F02405F00C0182A /* formationAlpha.sks */,
-				204032E71F02C5A900B22249 /* formationGamma.sks */,
 				204032E51F02BF0B00B22249 /* formationBeta.sks */,
+				204032E71F02C5A900B22249 /* formationGamma.sks */,
+				20C246901F042782005E5A1B /* formationDelta.sks */,
 				204032E91F02C83800B22249 /* MenuNode.sks */,
 				20E111E21F02EA0A005CC652 /* Spark.sks */,
 				204032EB1F02D16E00B22249 /* RestartButton.swift */,
@@ -326,6 +329,7 @@
 				204032EA1F02C83800B22249 /* MenuNode.sks in Resources */,
 				20B52BEA1F01CA2500C0182A /* GameScene.sks in Resources */,
 				204032E81F02C5A900B22249 /* formationGamma.sks in Resources */,
+				20C246911F042782005E5A1B /* formationDelta.sks in Resources */,
 				20B52BF51F01CA2500C0182A /* Assets.xcassets in Resources */,
 				20B52BF81F01CA2500C0182A /* LaunchScreen.storyboard in Resources */,
 				205B13811F02FA0900FA56BA /* GoogleService-Info.plist in Resources */,

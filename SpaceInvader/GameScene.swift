@@ -14,7 +14,7 @@ import FirebaseDatabase
 import FirebaseCore
 
 enum attackConfig{
-    case formationAlpha, formationBeta, formationGamma
+    case formationAlpha, formationBeta, formationGamma, formationDelta
 }
 
 class GameScene: SKScene , SKPhysicsContactDelegate{
@@ -66,7 +66,7 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
                     enemyVector.dy-=1
                 }
                 //for now switch all formation
-                switch(Int(arc4random_uniform(3))){
+                switch(Int(arc4random_uniform(4))){
                 case 0:
                     loadEnemy(formation: attackConfig.formationAlpha)
                     break
@@ -75,6 +75,9 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
                     break
                 case 2:
                     loadEnemy(formation: attackConfig.formationGamma)
+                    break
+                case 3:
+                    loadEnemy(formation: attackConfig.formationDelta)
                     break
                 default:
                     break
@@ -242,7 +245,10 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
                 completion()
             }))
             self.view?.window?.rootViewController?.present(alert, animated: true, completion: nil)
+        }else{
+            completion()
         }
+        
         
         
     }
@@ -261,11 +267,15 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
         case attackConfig.formationGamma:
             scene = SKScene(fileNamed: "formationGamma")!
             break
+        case attackConfig.formationDelta:
+            scene = SKScene(fileNamed: "formationDelta")!
+            break
         }
         
         for child in (scene.children){
             child.removeFromParent()
             addChild(child)
+            child.physicsBody?.collisionBitMask = 0 //pass through because im not changing all those values in editor
             child.physicsBody?.applyImpulse(enemyVector)
             
         }
@@ -301,22 +311,62 @@ class GameScene: SKScene , SKPhysicsContactDelegate{
         let nodeB = B.node
         
         
-        if(nodeA?.name=="invader" && nodeB?.name=="bullet" || nodeB?.name=="invader" && nodeA?.name=="bullet"){
+        
+        
+        
+        //bullet velocity y positive, player shot, negative y velocity, invader shot
+        
+        if(nodeA?.name=="bullet" && nodeB?.name=="invader"){
+            //bullet velocity negative so invader bullets do not kill themselves
+            if((nodeA?.physicsBody?.velocity.dy)! > CGFloat(0)){
+                //player shot bullet
+                //adding partical effect for hit
+                let spark = SKEmitterNode(fileNamed: "Spark")
+                spark?.position = (nodeA?.position)!
+                addChild(spark!)
+                spark!.run(SKAction.applyTorque(10, duration: 0.5), completion: {
+                    spark?.removeFromParent() //parical removal after finished animation
+                })
+                
+                nodeA?.removeFromParent()
+                nodeB?.removeFromParent()
+                score+=10 //basic score increment for now
+                
+            }
             
-            //adding partical effect for hit
-            let spark = SKEmitterNode(fileNamed: "Spark")
-            spark?.position = (nodeA?.position)!
-            addChild(spark!)
-            spark!.run(SKAction.applyTorque(10, duration: 0.5), completion: {
-                spark?.removeFromParent() //parical removal after finished animation
-            })
-            
-            nodeA?.removeFromParent()
-            nodeB?.removeFromParent()
-            score+=10 //basic score increment for now
+        }
+        if(nodeB?.name=="bullet" && nodeA?.name=="invader"){
+            //bullet velocity negative so invader bullets do not kill themselves
+            if((nodeB?.physicsBody?.velocity.dy)! > CGFloat(0)){
+                //player shot bullet
+                //adding partical effect for hit
+                let spark = SKEmitterNode(fileNamed: "Spark")
+                spark?.position = (nodeB?.position)!
+                addChild(spark!)
+                spark!.run(SKAction.applyTorque(10, duration: 0.5), completion: {
+                    spark?.removeFromParent() //parical removal after finished animation
+                })
+                
+                nodeA?.removeFromParent()
+                nodeB?.removeFromParent()
+                score+=10 //basic score increment for now
+                
+            }
             
         }
         
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        //also game over if invader hits a space defender
         if(nodeA?.name=="invader" && nodeB?.name=="SpaceDefender" || nodeB?.name=="invader" && nodeA?.name=="SpaceDefender" && gameLevel != -1){
             //game over
             gameLevel = -1

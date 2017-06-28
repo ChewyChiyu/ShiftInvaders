@@ -20,6 +20,7 @@ class Bullet : SKSpriteNode{
         self.physicsBody?.affectedByGravity = false
         self.physicsBody?.allowsRotation = false
         self.physicsBody?.contactTestBitMask = UInt32.max
+        self.physicsBody?.collisionBitMask = 0 // pass through
     }
     
     required init?(coder aDecoder: NSCoder) {
